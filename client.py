@@ -8,11 +8,12 @@ LED1 = 26
 LED2 = 19
 DHT_SENSOR = Adafruit_DHT.DHT11
 DHT_PIN = 2
-BUZZER = 3
+BUZZER = 22
 FLAME = 6
 
 # Gateway Info
 BROKER_ADDRESS = "192.168.1.215"
+# BROKER_ADDRESS = "192.168.2.42"
 BROKER_PORT = 1883
 
 # MQTT Topic
@@ -92,15 +93,17 @@ if __name__ == '__main__':
             humidity, temperature = Adafruit_DHT.read(DHT_SENSOR, DHT_PIN)
             print('Publishing message to topics: {0}, {1}'.format(TOPIC_TEMPERATURE, TOPIC_HUMIDITY))
             if humidity is not None:
-                print("Humidity={0}%".format(humidity))
+                # print("Humidity={0}%".format(humidity))
                 paho_client.publish(TOPIC_HUMIDITY,humidity)
             if temperature is not None:
-                print("Temp={0}C ".format(temperature))
+                # print("Temp={0}C ".format(temperature))
                 paho_client.publish(TOPIC_TEMPERATURE,temperature)
             if GPIO.input(FLAME) == GPIO.HIGH:
+                print('Publishing message to topic: {0}'.format(TOPIC_FLAME))
                 print('Fire Warning. Publishing message to topic: {0}'.format(TOPIC_FLAME))
                 paho_client.publish(TOPIC_FLAME,STATUS_HIGH)
             if GPIO.input(FLAME) == GPIO.LOW:
+                print('Publishing message to topic: {0}'.format(TOPIC_FLAME))
                 print('No Fire')
                 paho_client.publish(TOPIC_FLAME,STATUS_LOW)
             # Wait for 'delay' sec
@@ -108,7 +111,7 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         print('Keyboard Interrupt')
     except:
-        print('Interrupt')
+        print('Interrupt ')
     finally:
         print('Cleanup')
         paho_client.disconnect()
